@@ -1,0 +1,89 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environment
+venv/
+.env/
+.venv/
+
+# Django stuff:
+*.log
+*.pot
+*.pyc
+*.mo
+*.db
+*.sqlite3
+db.sqlite3
+
+# If using migrations in your repo, you may want to keep migrations
+# Otherwise, uncomment the following line to ignore them
+# store/migrations/
+
+# Django media files (user-uploaded content)
+media/
+
+# Static files (you may want to collect static elsewhere)
+staticfiles/
+
+# PyCharm project files
+.idea/
+
+# VS Code settings folder
+.vscode/
+
+# macOS
+.DS_Store
+
+# env files with secrets
+.env
+
+# Coverage reports
+htmlcov/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+
+# mypy type checker
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Pytest cache
+.pytest_cache/
+
+# Celery beat schedule file
+celerybeat-schedule
+
+# Sphinx documentation build
+docs/_build/
+
+# Pyre type checker
+.pyre/
