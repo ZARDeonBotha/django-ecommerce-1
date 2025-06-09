@@ -1,0 +1,9 @@
+<h2>Your Stores</h2>
+<ul>
+    {% for store in stores %}
+        <li>{{ store.name }} (Created: {{ store.created_at }})</li>
+    {% empty %}
+        <li>No stores found.</li>
+    {% endfor %}
+</ul>
+<a href="{% url 'create_store' %}">Create New Store</a>

@@ -1,0 +1,15 @@
+<h2>Your Orders</h2>
+<ul>
+    {% for order in orders %}
+        <li>
+            Order #{{ order.id }} - {{ order.created_at }}
+            <ul>
+                {% for item in order.items.all %}
+                    <li>{{ item.product.name }} x{{ item.quantity }} - R{{ item.price }}</li>
+                {% endfor %}
+            </ul>
+        </li>
+    {% empty %}
+        <li>No orders found.</li>
+    {% endfor %}
+</ul>

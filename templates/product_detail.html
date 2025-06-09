@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block title %}{{ product.name }} - eCommerce{% endblock %}
+{% block content %}
+    <div class="row">
+        <div class="col-md-8">
+            <h2>{{ product.name }}</h2>
+            <p>{{ product.description }}</p>
+            <p><strong>Price:</strong> ${{ product.price }}</p>
+            <p><strong>Stock:</strong> {{ product.stock }}</p>
+            <a href="{% url 'add_to_cart' product.id %}" class="btn btn-success">Add to Cart</a>
+        </div>
+        <div class="col-md-4">
+            <h4>Reviews</h4>
+            {% for review in reviews %}
+                <div class="border p-2 mb-2">
+                    <strong>{{ review.user.username }}</strong> - {{ review.rating }}/5<br>
+                    <small>{{ review.comment }}</small>
+                    {% if review.verified_purchase %}<span class="badge bg-success">Verified</span>{% endif %}
+                </div>
+            {% empty %}
+                <p>No reviews yet.</p>
+            {% endfor %}
+            {% if user.is_authenticated %}
+                <a href="{% url 'submit_review' product.id %}" class="btn btn-link">Write a review</a>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
