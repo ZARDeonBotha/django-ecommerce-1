@@ -143,3 +143,8 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = '*********@gmail.com'
 
 EMAIL_HOST_PASSWORD = '*************'
+
+LOGIN_URL = '/login/'
+
+LOGIN_REDIRECT_URL = '/'
+

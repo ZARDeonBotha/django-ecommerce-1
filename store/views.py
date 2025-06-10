@@ -36,7 +36,7 @@ def register(request):
             return redirect('home')
     else:
         form = CustomUserCreationForm()
-    return render(request, 'register.html', {'form': form})
+    return render(request, 'registration/register.html', {'form': form})
 
 
 def add_to_cart(request, product_id):
@@ -112,16 +112,10 @@ def submit_review(request, product_id):
 
 @login_required
 def manage_store(request):
-    # Only allow vendors to access this view
     if request.user.role != User.VENDOR:
         return HttpResponse("Only vendors can manage stores.", status=403)
-
-    # Vendor-specific logic goes here
-    # For example, you might show a list of the vendor's stores:
-    # stores = Store.objects.filter(owner=request.user)
-    # return render(request, 'manage_store.html', {'stores': stores})
-
-    return HttpResponse("Welcome, vendor! Here you can manage your store.")
+    stores = Store.objects.filter(owner=request.user)
+    return render(request, 'store/manage_store.html', {'stores': stores})
 
 
 @login_required
@@ -170,7 +164,7 @@ def vendor_store_list(request):
     if request.user.role != User.VENDOR:
         return HttpResponse("Only vendors can view their stores.", status=403)
     stores = Store.objects.filter(owner=request.user)
-    return render(request, 'store_list.html', {'stores': stores})
+    return render(request, 'store/store_list.html', {'stores': stores})
 
 
 @login_required
@@ -179,26 +173,23 @@ def vendor_product_list(request, store_id):
         return HttpResponse("Only vendors can manage products.", status=403)
     store = Store.objects.get(id=store_id, owner=request.user)
     products = Product.objects.filter(store=store)
-    return render(request, 'product_list.html',
-                  {'products': products, 'store': store})
-
+    return render(request, 'store/product_list.html', {'products': products, 'store': store})
 
 def all_products(request):
     products = Product.objects.all()
-    return render(request, 'all_products.html', {'products': products})
-
+    return render(request, 'store/all_products.html', {'products': products})
 
 def product_detail(request, product_id):
     product = Product.objects.get(id=product_id)
     reviews = product.review_set.all()
-    return render(request, 'product_detail.html',
+    return render(request, 'store/product_detail.html',
                   {'product': product, 'reviews': reviews})
 
 
 @login_required
 def order_history(request):
     orders = Order.objects.filter(user=request.user)
-    return render(request, 'order_history.html', {'orders': orders})
+    return render(request, 'store/order_history.html', {'orders': orders})
 
 
 @login_required
@@ -207,7 +198,7 @@ def vendor_orders(request):
         return HttpResponse("Only vendors can view store orders.", status=403)
     stores = Store.objects.filter(owner=request.user)
     orders = Order.objects.filter(items__product__store__in=stores).distinct()
-    return render(request, 'vendor_orders.html', {'orders': orders})
+    return render(request, 'store/vendor_orders.html', {'orders': orders})
 
 @login_required
 def create_product(request):
@@ -220,7 +211,7 @@ def create_product(request):
             return redirect('vendor_product_list', store_id=form.cleaned_data['store'].id)
     else:
         form = ProductForm()
-    return render(request, 'product_form.html', {'form': form})
+    return render(request, 'store/product_form.html', {'form': form})
 
 @login_required
 def create_store(request):
@@ -235,5 +226,5 @@ def create_store(request):
             return redirect('vendor_store_list')
     else:
         form = StoreForm()
-    return render(request, 'store_form.html', {'form': form})
+    return render(request, 'store/store_form.html', {'form': form})
 
