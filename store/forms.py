@@ -9,7 +9,7 @@ class ReviewForm(forms.ModelForm):
 class ProductForm(forms.ModelForm):
     class Meta:
         model = Product
-        fields = ['name', 'price', 'stock', 'store']
+        fields = ['name', 'price', 'stock']  # Remove 'store'
 
 class StoreForm(forms.ModelForm):
     class Meta:

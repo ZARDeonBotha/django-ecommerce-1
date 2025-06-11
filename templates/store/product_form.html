@@ -1,7 +1,13 @@
 {% extends 'store/base.html' %}
 {% block title %}Add/Edit Product{% endblock %}
 {% block content %}
-    <h2>{% if form.instance.pk %}Edit{% else %}Add{% endif %} Product</h2>
+    <h2>
+        {% if form.instance.pk %}
+            Edit Product in {{ store.name }}
+        {% else %}
+            Add Product to {{ store.name }}
+        {% endif %}
+    </h2>
     <form method="post">
         {% csrf_token %}
         {{ form.as_p }}
@@ -9,3 +15,4 @@
         <a href="{% url 'manage_store' %}" class="btn btn-secondary">Cancel</a>
     </form>
 {% endblock %}
+

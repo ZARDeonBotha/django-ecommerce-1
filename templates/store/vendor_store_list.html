@@ -1,0 +1,11 @@
+{% extends 'store/base.html' %}
+{% block content %}
+    <h2>My Stores</h2>
+    <ul>
+        {% for store in stores %}
+            <li>{{ store.name }}</li>
+        {% empty %}
+            <li>No stores found.</li>
+        {% endfor %}
+    </ul>
+{% endblock %}

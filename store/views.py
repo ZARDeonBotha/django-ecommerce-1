@@ -171,9 +171,10 @@ def vendor_store_list(request):
 def vendor_product_list(request, store_id):
     if request.user.role != User.VENDOR:
         return HttpResponse("Only vendors can manage products.", status=403)
-    store = Store.objects.get(id=store_id, owner=request.user)
+    store = get_object_or_404(Store, id=store_id, owner=request.user)
     products = Product.objects.filter(store=store)
-    return render(request, 'store/product_list.html', {'products': products, 'store': store})
+    return render(request, 'store/vendor_product_list.html',
+                  {'store': store, 'products': products})
 
 def all_products(request):
     products = Product.objects.all()
@@ -185,12 +186,15 @@ def product_detail(request, product_id):
     return render(request, 'store/product_detail.html',
                   {'product': product, 'reviews': reviews})
 
-
 @login_required
 def order_history(request):
     orders = Order.objects.filter(user=request.user)
     return render(request, 'store/order_history.html', {'orders': orders})
 
+@login_required
+def vendor_store_list(request):
+    stores = Store.objects.filter(owner=request.user)
+    return render(request, 'store/vendor_store_list.html', {'stores': stores})
 
 @login_required
 def vendor_orders(request):
@@ -201,17 +205,18 @@ def vendor_orders(request):
     return render(request, 'store/vendor_orders.html', {'orders': orders})
 
 @login_required
-def create_product(request):
-    if request.user.role != User.VENDOR:
-        return HttpResponse("Only vendors can add products.", status=403)
+def create_product(request, store_id):
+    store = get_object_or_404(Store, id=store_id, owner=request.user)
     if request.method == 'POST':
         form = ProductForm(request.POST)
         if form.is_valid():
-            form.save()
-            return redirect('vendor_product_list', store_id=form.cleaned_data['store'].id)
+            product = form.save(commit=False)
+            product.store = store  # Assign the store here
+            product.save()
+            return redirect('manage_store')
     else:
         form = ProductForm()
-    return render(request, 'store/product_form.html', {'form': form})
+    return render(request, 'store/product_form.html', {'form': form, 'store': store})
 
 @login_required
 def create_store(request):
