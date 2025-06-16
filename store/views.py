@@ -44,7 +44,7 @@ def add_to_cart(request, product_id):
     product = get_object_or_404(Product, id=product_id)
     cart[str(product_id)] = cart.get(str(product_id), 0) + 1
     request.session['cart'] = cart
-    return redirect('product_list')
+    return redirect('all_products')
 
 
 from django.http import HttpResponse
@@ -183,8 +183,7 @@ def all_products(request):
 def product_detail(request, product_id):
     product = Product.objects.get(id=product_id)
     reviews = product.review_set.all()
-    return render(request, 'store/product_detail.html',
-                  {'product': product, 'reviews': reviews})
+    return render(request, 'store/product_detail.html', {'product': product, 'reviews': reviews})
 
 @login_required
 def order_history(request):

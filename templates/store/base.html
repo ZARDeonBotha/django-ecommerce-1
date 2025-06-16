@@ -41,9 +41,13 @@
                                 <a class="nav-link" href="{% url 'create_store' %}">Create Store</a>
                             </li>
                         {% else %}
-                            <li class="nav-item">
-                                <a class="nav-link" href="{% url 'create_product' %}">Add Product</a>
-                            </li>
+                            {% for store in user.store_set.all %}
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{% url 'create_product' store.id %}">
+                                        Add Product to {{ store.name }}
+                                    </a>
+                                </li>
+                            {% endfor %}
                         {% endif %}
                     {% endif %}
                     <li class="nav-item">
@@ -63,7 +67,6 @@
                     </li>
                 {% endif %}
             </ul>
-
         </div>
     </div>
 </nav>
