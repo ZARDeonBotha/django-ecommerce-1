@@ -2,20 +2,20 @@ from django.contrib.auth import login
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.forms import UserCreationForm
 from django.http import HttpResponse, HttpRequest, HttpResponseRedirect
-from store.models import Product, Order, OrderItem, Review
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
 from django.http import HttpResponse
-from .models import Order, OrderItem, Product, User
-from .models import Store, User
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from .forms import ProductForm, StoreForm
-from .models import User, Store
+from .models import User, Store, Product, Review, Order, OrderItem
+from rest_framework import viewsets, permissions
+from .serializers import StoreSerializer, ProductSerializer, ReviewSerializer
+
 
 User = get_user_model()
 
@@ -36,6 +36,23 @@ class CustomUserCreationForm(UserCreationForm):
         model = User
         fields = ('username', 'email', 'role')
 
+class StoreViewSet(viewsets.ModelViewSet):
+    queryset = Store.objects.all()
+    serializer_class = StoreSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
+
+class ProductViewSet(viewsets.ModelViewSet):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+class ReviewViewSet(viewsets.ModelViewSet):
+    queryset = Review.objects.all()
+    serializer_class = ReviewSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
 def register(request: HttpRequest) -> HttpResponse:
     """

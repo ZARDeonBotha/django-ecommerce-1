@@ -1,8 +1,16 @@
-from django.urls import path
+
 from . import views
 from django.contrib.auth import views as auth_views
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
+from .views import StoreViewSet, ProductViewSet, ReviewViewSet
 
+router = DefaultRouter()
+router.register(r'stores', StoreViewSet)
+router.register(r'products', ProductViewSet)
+router.register(r'reviews', ReviewViewSet)
 urlpatterns = [
+    path('api/', include(router.urls)),
     path('', views.home, name='home'),
     path('checkout/', views.checkout, name='checkout'),
     path('product/<int:product_id>/review/', views.submit_review,
