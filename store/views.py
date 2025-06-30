@@ -1,3 +1,5 @@
+import os
+
 from django.contrib.auth import login
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.forms import UserCreationForm
@@ -11,6 +13,7 @@ from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
+from functions.tweet import Tweet
 from .forms import ProductForm, StoreForm
 from .models import User, Store, Product, Review, Order, OrderItem
 from rest_framework import viewsets, permissions
@@ -532,6 +535,8 @@ def create_product(request: HttpRequest, store_id: int) -> HttpResponse:
             product = form.save(commit=False)
             product.store = store  # Assign the store here
             product.save()
+            tweet_text = f"New product at {store.name}: {product.name}\n{product.description}"
+            Tweet._instance.make_tweet({'text': tweet_text})
             return redirect('manage_store')
     else:
         form = ProductForm()
@@ -557,6 +562,13 @@ def create_store(request: HttpRequest) -> HttpResponse:
         process.
     :rtype: HttpResponse
     """
+
+    # Debug: print environment variables
+    print(os.getenv('TWITTER_CONSUMER_KEY'))
+    print(os.getenv('TWITTER_CONSUMER_SECRET'))
+    print(os.getenv('TWITTER_ACCESS_TOKEN'))
+    print(os.getenv('TWITTER_ACCESS_TOKEN_SECRET'))
+
     if request.user.role != User.VENDOR:
         return HttpResponse("Only vendors can add stores.", status=403)
     if request.method == 'POST':
@@ -565,6 +577,8 @@ def create_store(request: HttpRequest) -> HttpResponse:
             store = form.save(commit=False)
             store.owner = request.user
             store.save()
+            tweet_text = f"New store: {store.name}\n{getattr(store, 'description', '')}"
+            Tweet._instance.make_tweet({'text': tweet_text})
             return redirect('vendor_store_list')
     else:
         form = StoreForm()
