@@ -138,16 +138,12 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'store.User'
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-
 EMAIL_HOST = 'smtp.gmail.com'
-
 EMAIL_PORT = 587
-
 EMAIL_USE_TLS = True
 
-EMAIL_HOST_USER = '*********@gmail.com'
-
-EMAIL_HOST_PASSWORD = '*************'
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 
 LOGIN_URL = '/login/'
 
@@ -159,3 +155,14 @@ MEDIA_URL = '/media/'
 
 MEDIA_ROOT = BASE_DIR / 'media'
 
+# --- OAuth Credentials from .env ---
+TWITTER_CONSUMER_KEY = os.getenv('TWITTER_CONSUMER_KEY')
+TWITTER_CONSUMER_SECRET = os.getenv('TWITTER_CONSUMER_SECRET')
+TWITTER_ACCESS_TOKEN = os.getenv('TWITTER_ACCESS_TOKEN')
+TWITTER_ACCESS_TOKEN_SECRET = os.getenv('TWITTER_ACCESS_TOKEN_SECRET')
+
+# Optional: Debugging - Remove these in production!
+print("TWITTER_CONSUMER_KEY:", repr(TWITTER_CONSUMER_KEY))
+print("TWITTER_CONSUMER_SECRET:", repr(TWITTER_CONSUMER_SECRET))
+print("TWITTER_ACCESS_TOKEN:", repr(TWITTER_ACCESS_TOKEN))
+print("TWITTER_ACCESS_TOKEN_SECRET:", repr(TWITTER_ACCESS_TOKEN_SECRET))
