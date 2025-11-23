@@ -155,14 +155,19 @@ MEDIA_URL = '/media/'
 
 MEDIA_ROOT = BASE_DIR / 'media'
 
-# --- OAuth Credentials from .env ---
-TWITTER_CONSUMER_KEY = os.getenv('TWITTER_CONSUMER_KEY')
+# --- Twitter API Credentials from .env ---
+TWITTER_CONSUMER_KEY = os.getenv('TWITTER_CONSUMER_KEY')              # legacy/read-only
 TWITTER_CONSUMER_SECRET = os.getenv('TWITTER_CONSUMER_SECRET')
 TWITTER_ACCESS_TOKEN = os.getenv('TWITTER_ACCESS_TOKEN')
 TWITTER_ACCESS_TOKEN_SECRET = os.getenv('TWITTER_ACCESS_TOKEN_SECRET')
 
-# Optional: Debugging - Remove these in production!
-print("TWITTER_CONSUMER_KEY:", repr(TWITTER_CONSUMER_KEY))
-print("TWITTER_CONSUMER_SECRET:", repr(TWITTER_CONSUMER_SECRET))
-print("TWITTER_ACCESS_TOKEN:", repr(TWITTER_ACCESS_TOKEN))
-print("TWITTER_ACCESS_TOKEN_SECRET:", repr(TWITTER_ACCESS_TOKEN_SECRET))
+TWITTER_BEARER_TOKEN = os.getenv('TWITTER_BEARER_TOKEN')              # REQUIRED for all posting actions
+TWITTER_CLIENT_ID = os.getenv('TWITTER_CLIENT_ID')                    # for OAuth2 flows (if used)
+TWITTER_CLIENT_SECRET = os.getenv('TWITTER_CLIENT_SECRET')            # for OAuth2 flows (if used)
+
+# --- Optional: Debugging (remove for submission/production) ---
+#print("TWITTER_CONSUMER_KEY:", repr(TWITTER_CONSUMER_KEY))
+#print("TWITTER_CONSUMER_SECRET:", repr(TWITTER_CONSUMER_SECRET))
+#print("TWITTER_ACCESS_TOKEN:", repr(TWITTER_ACCESS_TOKEN))
+#print("TWITTER_ACCESS_TOKEN_SECRET:", repr(TWITTER_ACCESS_TOKEN_SECRET))
+#print("TWITTER_BEARER_TOKEN:", repr(TWITTER_BEARER_TOKEN))
