@@ -508,67 +508,37 @@ def vendor_orders(request: HttpRequest) -> HttpResponse:
 
 @login_required
 def create_product(request: HttpRequest, store_id: int) -> HttpResponse:
-    """
-    Handles the creation of a new product for a specific store.
-    This function ensures that the store exists, belongs to the currently
-    authenticated user, and processes the form submission for the
-    new product. Depending on the HTTP request method, it either displays
-    the product form or processes and saves the submitted form data.
-
-    :param request: The HTTP request object, which contains metadata
-        about the request. It is also used to check the authenticated user
-        and validate ownership of the store.
-    :type request: HttpRequest
-    :param store_id: The unique identifier of the store where the
-        product is being created. Used to associate the new product
-        with the correct store.
-    :type store_id: int
-    :return: An HTTP response which either renders the product form
-        for a GET request or redirects to the 'manage_store' view upon
-        successful form submission.
-    :rtype: HttpResponse
-    """
     store = get_object_or_404(Store, id=store_id, owner=request.user)
+    error_message = None
     if request.method == 'POST':
         form = ProductForm(request.POST)
         if form.is_valid():
             product = form.save(commit=False)
-            product.store = store  # Assign the store here
+            product.store = store
             product.save()
             tweet_text = f"New product at {store.name}: {product.name}\n{product.description}"
-            Tweet._instance.make_tweet({'text': tweet_text})
-            return redirect('manage_store')
+            user_token = request.session.get('twitter_access_token')
+            if user_token:
+                try:
+                    Tweet._instance.make_tweet({'text': tweet_text}, user_token)
+                except Exception as exc:
+                    error_message = f"Product added, but Twitter posting failed: {exc}"
+            else:
+                error_message = "Product added, but you are not authenticated with Twitter."
+            return render(request, 'store/product_success.html', {
+                'product': product,
+                'error_message': error_message
+            })
     else:
         form = ProductForm()
     return render(request,
                   'store/product_form.html',
-                  {'form': form, 'store': store}
-                  )
-
+                  {'form': form, 'store': store})
 
 @login_required
 def create_store(request: HttpRequest) -> HttpResponse:
-    """
-    Handles the creation of a new store for vendors. This view
-    renders a form to create a store and processes form submissions. It
-    restricts access to only users with a VENDOR role and ensures the
-    created store is associated with the logged-in user.
-
-    :param request: The HTTP request object containing metadata about
-        the request.
-    :type request: HttpRequest
-    :return: An HTTP response with either a rendered store creation
-        form or a response indicating the outcome of the store creation
-        process.
-    :rtype: HttpResponse
-    """
-
-    # Debug: print environment variables
-    print(os.getenv('TWITTER_CONSUMER_KEY'))
-    print(os.getenv('TWITTER_CONSUMER_SECRET'))
-    print(os.getenv('TWITTER_ACCESS_TOKEN'))
-    print(os.getenv('TWITTER_ACCESS_TOKEN_SECRET'))
-
+    store = None
+    error_message = None
     if request.user.role != User.VENDOR:
         return HttpResponse("Only vendors can add stores.", status=403)
     if request.method == 'POST':
@@ -578,10 +548,20 @@ def create_store(request: HttpRequest) -> HttpResponse:
             store.owner = request.user
             store.save()
             tweet_text = f"New store: {store.name}\n{getattr(store, 'description', '')}"
-            Tweet._instance.make_tweet({'text': tweet_text})
-            return redirect('vendor_store_list')
+            user_token = request.session.get('twitter_access_token')
+            if user_token:
+                try:
+                    Tweet._instance.make_tweet({'text': tweet_text}, user_token)
+                except Exception as exc:
+                    error_message = f"Store added, but Twitter posting failed: {exc}"
+            else:
+                error_message = "Store added, but you are not authenticated with Twitter."
+            return render(request, 'store/store_success.html', {
+                'store': store,
+                'error_message': error_message
+            })
     else:
         form = StoreForm()
     return render(request,
                   'store/store_form.html',
-                  {'form': form})
+                  {'form': form, 'store': store})

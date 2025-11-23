@@ -1,5 +1,5 @@
 
-from . import views
+from . import views, twitter_views
 from django.contrib.auth import views as auth_views
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
@@ -49,6 +49,8 @@ urlpatterns = [
     path('product/<int:product_id>/', views.product_detail,
          name='product_detail'),
     path('cart/add/<int:product_id>/', views.add_to_cart,
-         name='add_to_cart')
+         name='add_to_cart'),
+    path('twitter/login/', twitter_views.twitter_login, name='twitter_login'),
+    path('twitter/callback/', twitter_views.twitter_callback, name='twitter_callback'),
 
 ]

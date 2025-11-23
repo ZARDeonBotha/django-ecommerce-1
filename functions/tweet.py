@@ -1,4 +1,3 @@
-import os
 import requests
 
 class Tweet:
@@ -7,14 +6,12 @@ class Tweet:
     def __new__(cls):
         if cls._instance is None:
             cls._instance = super(Tweet, cls).__new__(cls)
-            # No authentication needed for Bearer token approach
         return cls._instance
 
-    def make_tweet(self, tweet):
-        bearer_token = os.getenv('TWITTER_BEARER_TOKEN')
+    def make_tweet(self, tweet, user_token):
         url = "https://api.twitter.com/2/tweets"
         headers = {
-            "Authorization": f"Bearer {bearer_token}",
+            "Authorization": f"Bearer {user_token}",
             "Content-Type": "application/json"
         }
         response = requests.post(url, headers=headers, json=tweet)
